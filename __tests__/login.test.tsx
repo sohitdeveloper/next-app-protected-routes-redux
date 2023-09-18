@@ -16,7 +16,7 @@ jest.mock("next/router", () => ({
   },
 }));
 describe("Login", () => {
-  test("renders without crashing", () => {
+  test("render without crashing", () => {
     render(
       <Provider store={store}>
         <Login />
