@@ -6,6 +6,7 @@ import UrlConstants from "@/utils/constants/UrlConstants";
 import { flushLocalstorage, getTokenLocal } from "@/utils/common";
 import { useDispatch } from "react-redux";
 import { setAuthentication } from "@/redux/authSlice";
+import { userLogout } from "@/services/global";
 
 const headerStyles = {
   header: {
@@ -47,24 +48,19 @@ const Header: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    let accessToken = getTokenLocal() ? true : false;
-    HTTPService(
-      "POST",
-      UrlConstants.base_url + UrlConstants.logout,
-      false,
-      false,
-      true,
-      accessToken
-    )
-      .then((res: any) => {
+  const handleLogout = async () => {
+    let accessToken = getTokenLocal() ? getTokenLocal() : false;
+    try {
+      const response = await userLogout(accessToken);
+      console.log(response);
+      if (response.ok) {
         flushLocalstorage();
         router.push("/login");
         dispatch(setAuthentication(false));
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
