@@ -1,8 +1,7 @@
 import { setAuthentication } from "@/redux/authSlice";
 import { RootState } from "@/redux/store";
-import HTTPService from "@/services/HttpService";
+import { userLogin } from "@/services/global";
 import { setRoleLocal, setTokenLocal, setUser } from "@/utils/common";
-import UrlConstants from "@/utils/constants/UrlConstants";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,26 +21,17 @@ const Login = () => {
         email: username,
         password: password,
       };
-      HTTPService(
-        "POST",
-        UrlConstants.base_url + UrlConstants.login,
-        body,
-        false,
-        false
-      )
-        .then((res: any) => {
-          setTokenLocal(res?.data?.token);
-          setUser(res?.data?.user);
-          setRoleLocal(res?.data?.user?.role);
-          router.push("/dashboard");
-          dispatch(setAuthentication(true));
-        })
-        .catch((err: any) => {
-          console.log(err);
-        });
-    } catch (error) {
-      // Handle login error
-      console.log(error);
+      const response = await userLogin(body);
+      console.log("handleLogin", response);
+      if (response.ok) {
+        setTokenLocal(response?.data?.token);
+        setUser(response?.data?.user);
+        setRoleLocal(response?.data?.user?.role);
+        router.push("/dashboard");
+        dispatch(setAuthentication(true));
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
   useEffect(() => {
