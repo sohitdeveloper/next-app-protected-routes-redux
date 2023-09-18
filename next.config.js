@@ -1,24 +1,25 @@
 /** @type {import('next').NextConfig} */
-// const withAuth = (handler) => (req, res) => {
-//   // Implement your authentication logic here
-//   // For example, check for authentication cookies or tokens
-//   if (localStorage.getItem("JWTToken")) {
-//     return handler(req, res);
-//   } else {
-//     // Redirect to login or handle authentication failure
-//     res.redirect("/login");
-//   }
-// };
-
 const nextConfig = {
-  //   async rewrites() {
-  //     return [
-  //       {
-  //         source: "/reset-password",
-  //         destination: "/reset-password", // Publicly accessible route
-  //       },
-  //     ];
-  //   },
+  reactStrictMode: true,
+  images: {
+    domains: [],
+  },
+  env: {
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  },
+  eslint: {
+    // allows  builds to successfully complete even if it has ESLint errors.
+    ignoreDuringBuilds: true,
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/dashboard',
+        permanent: true,
+      },
+    ];
+  },
 };
 
-module.exports = nextConfig;
+module.exports = nextConfig
